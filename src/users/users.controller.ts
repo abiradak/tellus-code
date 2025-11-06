@@ -1,6 +1,7 @@
 import { Controller, Get, Post, UseGuards } from "@nestjs/common";
 import { UsersService } from "./users.service";
-UsersService
+import { PermissionGuard } from "src/common/guards/permissions.guard";
+import { Permission } from "src/common/decorators/permission.decorator";
 
 @Controller("users")
 export class UsersController {
@@ -8,8 +9,10 @@ export class UsersController {
     constructor(private userservice:  UsersService){}
 
     @Get()
-    @UseGuards()
+    @UseGuards(PermissionGuard)
+    @Permission('VIEW')
     getAll() {
+        console.log("here");
         return this.userservice.getAll();
     }
 

@@ -1,6 +1,8 @@
+import { Injectable } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { USERS, ROLES } from "./users.data";
 
+@Injectable()
 export class UsersService {
   private users = [...USERS];
 
