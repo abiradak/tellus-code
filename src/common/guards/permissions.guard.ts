@@ -17,7 +17,7 @@ export class PermissionGuard implements CanActivate {
   ) {}
 
   canActivate(context: ExecutionContext): boolean {
-    const requiredPermission = this.reflector.get<string>(
+    const requiredPermission = this.reflector.get(
       "permission",
       context.getHandler()
     );
