@@ -53,15 +53,44 @@ export class UsersService {
   }
 
   // @@ Get Managed User
+  // @@ Logically And Can manage The The Viewer Personel as well But iN example Data Its different So Keeping Both 
+
+  // getManagedUsers(id: number) {
+  //   const user = this.getOne(id);
+  //   if (!user) throw new NotFoundException("User not found");
+
+  //   if (!user.roles.includes("ADMIN")) return [];
+
+  //   return this.users.filter(u =>
+  //     u.roles.some(r => user.roles.every(r => u.roles.includes(r))) && u.groups.every(g => user.groups.includes(g))
+  //   );
+  // }
+
   getManagedUsers(id: number) {
     const user = this.getOne(id);
     if (!user) throw new NotFoundException("User not found");
 
+    // Only admins can manage
     if (!user.roles.includes("ADMIN")) return [];
 
-    return this.users.filter(u => 
-      u.groups.some(g => user.groups.includes(g))
-    );
-  }
+    return this.users.filter((u) => {
+      if (u.id === user.id) return false; // skip self
 
+      // must share at least one group
+      const sameGroup = u.groups.some((g) => user.groups.includes(g));
+      if (!sameGroup) return false;
+
+      const ifViewr = u.roles.includes("VIEWER");
+      if (ifViewr) {
+        // Strict case: roles must fully match the admin’s roles
+        return (
+          u.roles.length === user.roles.length &&
+          u.roles.every((r) => user.roles.includes(r))
+        );
+      } else {
+        // Normal case: just check any role overlap
+        return u.roles.some((r) => user.roles.includes(r));
+      }
+    });
+  }
 }

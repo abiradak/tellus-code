@@ -43,7 +43,10 @@ export class UsersController {
     return this.userservice.delete(id);
   }
 
-  // @Get("managed/:id")
+
+  @Get("managed/:id")
+  @UseGuards(PermissionGuard)
+  @Permission("VIEW")
   findManaged(@Param("id", ParseIntPipe) id: number) {
     return this.userservice.getManagedUsers(id);
   }
